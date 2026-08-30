@@ -1,0 +1,84 @@
+{
+    "name": "laravel/laravel",
+    "type": "project",
+    "description": "The Laravel Framework.",
+    "keywords": ["framework", "laravel"],
+    "license": "MIT",
+    "require": {
+        "php": "^7.3|^8.0",
+        "barryvdh/laravel-dompdf": "^2.0",
+        "fruitcake/laravel-cors": "^2.0",
+        "guzzlehttp/guzzle": "^7.0.1",
+        "inertiajs/inertia-laravel": "^0.6.9",
+        "laravel/framework": "^8.75",
+        "laravel/sanctum": "^2.11",
+        "laravel/tinker": "^2.5",
+        "milon/barcode": "^9.0",
+        "tightenco/ziggy": "^1.8"
+    },
+    "require-dev": {
+        "facade/ignition": "^2.5",
+        "fakerphp/faker": "^1.9.1",
+        "laravel/sail": "^1.0.1",
+        "mockery/mockery": "^1.4.4",
+        "nunomaduro/collision": "^5.10",
+        "phpunit/phpunit": "^9.5.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "audit": {
+            "ignore": [
+                "GHSA-j8qw-6jw8-r297",
+                "GHSA-f5gf-2cj8-52g2",
+                "GHSA-8hg6-c449-896m",
+                "GHSA-cx96-42px-69fm",
+                "GHSA-7x2p-4jvh-6384",
+                "GHSA-wvh6-f5jh-8gw4",
+                "GHSA-56gj-mvh6-rp75",
+                "GHSA-2kw5-jd8w-5mvh",
+                "GHSA-3cw5-7cxw-v5qg",
+                "GHSA-4jrs-y99s-q8j6",
+                "GHSA-hbk6-2vfz-8f8n",
+                "GHSA-6x28-7h8c-chx4",
+                "GHSA-7ztm-rpt3-qqzk",
+                "CVE-2023-50262"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
