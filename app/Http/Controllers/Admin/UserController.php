@@ -12,22 +12,34 @@ class UserController extends Controller
     public function index()
     {
         return Inertia::render('Admin/Users/Index', [
-            'users' => User::orderBy('created_at')->get(['id', 'name', 'email', 'role', 'created_at']),
+            'users' => User::with('organizerProfile')
+                ->orderBy('created_at')
+                ->get(['id', 'name', 'email', 'role', 'created_at']),
         ]);
     }
 
     public function updateRole(Request $request, User $user)
     {
         $validated = $request->validate([
-            'role' => ['required', 'in:admin,user'],
+            'role' => ['required', 'in:admin,organizer,user'],
+            'company_name' => ['nullable', 'string', 'max:255'],
         ]);
 
         // Don't let an admin accidentally strand the app with zero admins.
-        if ($user->role === 'admin' && $validated['role'] === 'user' && User::where('role', 'admin')->count() <= 1) {
+        if ($user->role === 'admin' && $validated['role'] !== 'admin' && User::where('role', 'admin')->count() <= 1) {
             return redirect()->back()->with('error', 'At least one admin must remain.');
         }
 
-        $user->update($validated);
+        $user->update(['role' => $validated['role']]);
+
+        if ($validated['role'] === 'organizer') {
+            $user->organizerProfile()->updateOrCreate(
+                [],
+                ['company_name' => $validated['company_name'] ?? $user->name]
+            );
+        } elseif ($validated['role'] !== 'organizer' && $user->organizerProfile) {
+            $user->organizerProfile()->delete();
+        }
 
         return redirect()->back()->with('success', 'Role updated.');
     }

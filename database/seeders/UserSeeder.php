@@ -15,20 +15,43 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::create([
-            "name"=>"admin user",
-            "email"=>"admin@admin.com",
-            "role"=>"admin",
-            "email_verified_at"=> now(),
-            "password"=> Hash::make("password"),
-        ]);
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@admin.com'],
+            [
+                "name" => "admin user",
+                "role" => "admin",
+                "email_verified_at" => now(),
+                "password" => Hash::make("password"),
+            ]
+        );
 
-        User::create([
-            "name"=>"user",
-            "email"=>"user@example.com",
-            "role"=>"user",
-            "email_verified_at"=> now(),
-            "password"=> Hash::make("password"),
-        ]); 
+        User::firstOrCreate(
+            ['email' => 'user@example.com'],
+            [
+                "name" => "user",
+                "role" => "user",
+                "email_verified_at" => now(),
+                "password" => Hash::make("password"),
+            ]
+        );
+
+        $organizer = User::firstOrCreate(
+            ['email' => 'organizer@example.com'],
+            [
+                "name" => "Event Organizer",
+                "role" => "organizer",
+                "email_verified_at" => now(),
+                "password" => Hash::make("password"),
+            ]
+        );
+
+        if (!$organizer->organizerProfile) {
+            $organizer->organizerProfile()->create([
+                'company_name' => 'EventHub Productions',
+                'bio' => 'Professional event management company.',
+                'phone' => '+251911223344',
+                'website' => 'https://example.com',
+            ]);
+        }
     }
 }
