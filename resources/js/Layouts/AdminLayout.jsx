@@ -1,12 +1,44 @@
 import React from 'react';
 import { Link, usePage, router } from '@inertiajs/react';
 
-const navItems = [
+const managementItems = [
     { label: 'Dashboard', href: '/dashboard', match: '/dashboard', icon: '📊' },
-    { label: 'Users', href: '/admin/users', match: '/admin/users', icon: '👥' },
     { label: 'Events', href: '/admin/events', match: '/admin/events', icon: '🎫' },
+    { label: 'Categories', href: '/admin/categories', match: '/admin/categories', icon: '🏷️' },
+    { label: 'Users', href: '/admin/users', match: '/admin/users', icon: '👥' },
+    { label: 'Organizers', href: '/admin/organizers', match: '/admin/organizers', icon: '🎪' },
+    { label: 'Discount Codes', href: '/admin/discount-codes', match: '/admin/discount-codes', icon: '💸' },
+];
+
+const insightItems = [
+    { label: 'Reports', href: '/admin/reports', match: '/admin/reports', icon: '📈' },
+    { label: 'Analytics', href: '/admin/analytics', match: '/admin/analytics', icon: '📊' },
     { label: 'Scanner', href: '/admin/scanner', match: '/admin/scanner', icon: '📷' },
 ];
+
+function NavItems({ items, url }) {
+    return (
+        <nav className="space-y-1">
+            {items.map((item) => {
+                const active = url.startsWith(item.match);
+                return (
+                    <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                            active
+                                ? 'bg-red-500/10 text-red-400 border-l-[3px] border-red-500 ml-0 pl-[9px]'
+                                : 'text-gray-400 hover:bg-white/5 hover:text-white border-l-[3px] border-transparent ml-0 pl-[9px]'
+                        }`}
+                    >
+                        <span className="text-base">{item.icon}</span>
+                        {item.label}
+                    </Link>
+                );
+            })}
+        </nav>
+    );
+}
 
 export default function AdminLayout({ title, children }) {
     const { url, props } = usePage();
@@ -22,26 +54,10 @@ export default function AdminLayout({ title, children }) {
                         </div>
                         <span className="font-bold text-white text-lg tracking-tight">EventHub</span>
                     </div>
-                    <p className="text-[10px] uppercase tracking-widest text-gray-500 px-3 mb-3 font-semibold">Platform</p>
-                    <nav className="space-y-1">
-                        {navItems.map((item) => {
-                            const active = url.startsWith(item.match);
-                            return (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
-                                        active
-                                            ? 'bg-red-500/10 text-red-400 border-l-[3px] border-red-500 ml-0 pl-[9px]'
-                                            : 'text-gray-400 hover:bg-white/5 hover:text-white border-l-[3px] border-transparent ml-0 pl-[9px]'
-                                    }`}
-                                >
-                                    <span className="text-base">{item.icon}</span>
-                                    {item.label}
-                                </Link>
-                            );
-                        })}
-                    </nav>
+                    <p className="text-[10px] uppercase tracking-widest text-gray-500 px-3 mb-3 font-semibold">Management</p>
+                    <NavItems items={managementItems} url={url} />
+                    <p className="text-[10px] uppercase tracking-widest text-gray-500 px-3 mt-6 mb-3 font-semibold">Insights</p>
+                    <NavItems items={insightItems} url={url} />
                 </div>
 
                 <div className="border-t border-gray-800 pt-4 px-3">

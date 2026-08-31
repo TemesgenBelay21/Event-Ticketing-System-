@@ -4,26 +4,27 @@ import AdminLayout from '../../Layouts/AdminLayout';
 
 export default function Dashboard({ stats }) {
     const cards = [
-        { label: 'Total Events', value: stats.totalEvents, color: 'bg-red-500', lightColor: 'bg-red-50 text-red-600', icon: '🎫' },
-        { label: 'Total Users', value: stats.totalUsers, color: 'bg-blue-500', lightColor: 'bg-blue-50 text-blue-600', icon: '👥' },
-        { label: 'Total Tickets', value: stats.totalTickets, color: 'bg-emerald-500', lightColor: 'bg-emerald-50 text-emerald-600', icon: '🎟️' },
+        { label: 'Total Events', value: stats.totalEvents, lightColor: 'bg-red-50 text-red-600', icon: '🎫' },
+        { label: 'Total Users', value: stats.totalUsers, lightColor: 'bg-blue-50 text-blue-600', icon: '👥' },
+        { label: 'Total Tickets', value: stats.totalTickets, lightColor: 'bg-emerald-50 text-emerald-600', icon: '🎟️' },
+        { label: 'Categories', value: stats.totalCategories, lightColor: 'bg-purple-50 text-purple-600', icon: '🏷️' },
+        { label: 'Total Revenue', value: `ETB ${stats.totalRevenue.toLocaleString()}`, lightColor: 'bg-amber-50 text-amber-600', icon: '💰' },
     ];
 
     return (
         <AdminLayout title="Dashboard">
             <Head title="Dashboard" />
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mb-8">
                 {cards.map((card) => (
-                    <div key={card.label} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200">
+                    <div key={card.label} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow duration-200">
                         <div className="flex items-center justify-between mb-4">
                             <div className={`w-11 h-11 ${card.lightColor} rounded-xl flex items-center justify-center text-lg`}>
                                 {card.icon}
                             </div>
-                            <div className={`w-2 h-2 ${card.color} rounded-full`}></div>
                         </div>
                         <div className="text-sm text-gray-500 font-medium">{card.label}</div>
-                        <div className="text-3xl font-bold text-gray-900 mt-1">{card.value}</div>
+                        <div className="text-2xl font-bold text-gray-900 mt-1">{card.value}</div>
                     </div>
                 ))}
             </div>
@@ -36,7 +37,7 @@ export default function Dashboard({ stats }) {
                     <div>
                         <h2 className="text-lg font-bold text-gray-900">Welcome Back!</h2>
                         <p className="text-sm text-gray-500 mt-0.5">
-                            Manage your events, users, and tickets from this dashboard.
+                            Manage your events, users, tickets, payments, and view analytics from this dashboard.
                         </p>
                     </div>
                 </div>

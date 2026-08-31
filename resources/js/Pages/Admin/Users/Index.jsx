@@ -55,6 +55,7 @@ export default function Index({ users }) {
                                         className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all duration-200 cursor-pointer"
                                     >
                                         <option value="user">User</option>
+                                        <option value="organizer">Organizer</option>
                                         <option value="admin">Admin</option>
                                     </select>
                                 </td>

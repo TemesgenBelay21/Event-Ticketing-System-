@@ -33,15 +33,34 @@ function QrModal({ ticket, onClose }) {
     );
 }
 
-function TicketCard({ ticket, onView }) {
+function StatusBadge({ status }) {
+    const map = {
+        paid: 'bg-green-50 text-green-600',
+        pending: 'bg-amber-50 text-amber-600',
+        free: 'bg-blue-50 text-blue-600',
+        failed: 'bg-red-50 text-red-600',
+    };
+    const labels = {
+        paid: '● Paid',
+        pending: '● Payment Due',
+        free: '● Free',
+        failed: '● Payment Failed',
+    };
+    return (
+        <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${map[status] || 'bg-gray-50 text-gray-600'}`}>
+            {labels[status] || status}
+        </span>
+    );
+}
+
+function TicketCard({ ticket, onView, onPay }) {
+    const showPay = ticket.payment_status === 'pending';
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200">
             <div className="h-1.5 bg-gradient-to-r from-red-500 to-red-400"></div>
             <div className="p-5">
                 <div className="flex justify-between items-start mb-3">
-                    <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${ticket.is_verified ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600'}`}>
-                        {ticket.is_verified ? '● Checked-in' : '● Pending Check-in'}
-                    </span>
+                    <StatusBadge status={ticket.payment_status} />
                     <span className="text-xs text-gray-400 font-mono">#{ticket.barcode}</span>
                 </div>
                 <div className="font-bold text-gray-900 text-lg">{ticket.event.name}</div>
@@ -50,6 +69,17 @@ function TicketCard({ ticket, onView }) {
                         weekday: 'short', month: 'short', day: 'numeric',
                     })}, {new Date(ticket.event.event_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </div>
+
+                {ticket.ticket_type && (
+                    <div className="flex items-center justify-between bg-purple-50 rounded-lg px-3 py-2 mt-3 text-sm">
+                        <span className="text-purple-700 font-medium">{ticket.ticket_type.name}</span>
+                        <span className="text-purple-600 font-semibold">
+                            {ticket.payment_status === 'free'
+                                ? 'Free'
+                                : `ETB ${Number(ticket.amount_paid || 0).toLocaleString()}`}
+                        </span>
+                    </div>
+                )}
 
                 <button
                     onClick={() => onView(ticket)}
@@ -60,9 +90,17 @@ function TicketCard({ ticket, onView }) {
                 </button>
 
                 <div className="flex gap-2">
+                    {showPay && (
+                        <button
+                            onClick={() => onPay(ticket)}
+                            className="flex-1 text-center text-sm bg-red-500 text-white rounded-lg py-2.5 hover:bg-red-600 font-semibold shadow-sm shadow-red-500/25 transition-all duration-200"
+                        >
+                            Pay Now — ETB {Number(ticket.amount_paid).toLocaleString()} 💳
+                        </button>
+                    )}
                     <a
                         href={`/tickets/${ticket.id}/pdf`}
-                        className="flex-1 text-center text-sm border border-gray-200 text-gray-600 rounded-lg py-2.5 hover:bg-gray-50 font-medium transition-all duration-200"
+                        className={showPay ? 'flex-1 text-center text-sm border border-gray-200 text-gray-600 rounded-lg py-2.5 hover:bg-gray-50 font-medium transition-all duration-200' : 'flex-1 text-center text-sm border border-gray-200 text-gray-600 rounded-lg py-2.5 hover:bg-gray-50 font-medium transition-all duration-200'}
                     >
                         PDF Ticket
                     </a>
@@ -72,16 +110,88 @@ function TicketCard({ ticket, onView }) {
     );
 }
 
+function TicketTypeModal({ event, onClose }) {
+    const [selectedType, setSelectedType] = useState(event.ticket_types?.find((t) => t.available > 0)?.id ?? event.ticket_types?.[0]?.id ?? '');
+
+    const selected = event.ticket_types?.find((t) => t.id === selectedType);
+
+    function confirm() {
+        router.post('/tickets', { event_id: event.id, ticket_type_id: selectedType });
+    }
+
+    return (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md border border-gray-100">
+                <div className="flex justify-between items-start mb-4">
+                    <div>
+                        <h2 className="text-lg font-bold text-gray-900">Choose Ticket</h2>
+                        <p className="text-sm text-gray-500 mt-0.5">{event.name}</p>
+                    </div>
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100">✕</button>
+                </div>
+
+                <div className="space-y-3">
+                    {(event.ticket_types || []).map((type) => (
+                        <button
+                            key={type.id}
+                            onClick={() => setSelectedType(type.id)}
+                            disabled={type.quantity > 0 && type.available <= 0}
+                            className={`w-full text-left rounded-xl border-2 p-4 transition-all duration-200 ${
+                                selectedType === type.id
+                                    ? 'border-red-500 bg-red-50/50'
+                                    : 'border-gray-200 hover:border-gray-300 bg-white'
+                            } ${type.quantity > 0 && type.available <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <div className="font-bold text-gray-900">{type.name}</div>
+                                    <div className="text-xs text-gray-500 mt-0.5">
+                                        {type.quantity > 0 && type.available <= 0
+                                            ? 'Sold out'
+                                            : type.quantity > 0 ? `${type.available} left` : 'Unlimited'}
+                                    </div>
+                                </div>
+                                <div className="font-bold text-red-600">
+                                    {Number(type.price) > 0 ? `ETB ${Number(type.price).toLocaleString()}` : 'Free'}
+                                </div>
+                            </div>
+                        </button>
+                    ))}
+                    {(event.ticket_types || []).length === 0 && (
+                        <p className="text-sm text-gray-400 text-center py-6">
+                            This event currently has no ticket types available.
+                        </p>
+                    )}
+                </div>
+
+                <div className="flex gap-3 mt-6">
+                    <button onClick={onClose} className="flex-1 px-4 py-2.5 text-sm rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium transition-all duration-200">
+                        Cancel
+                    </button>
+                    <button
+                        onClick={confirm}
+                        disabled={!selected}
+                        className="flex-1 px-4 py-2.5 text-sm rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 shadow-sm shadow-red-500/25 transition-all duration-200 disabled:opacity-50"
+                    >
+                        {Number(selected?.price || 0) > 0 ? 'Proceed to Pay' : 'Claim Free Ticket'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function Tickets({ events, tickets }) {
     const [activeTicket, setActiveTicket] = useState(null);
+    const [bookingEvent, setBookingEvent] = useState(null);
     const { props } = usePage();
     const flashError = props.flash?.error;
     const flashSuccess = props.flash?.success;
 
     const registeredEventIds = new Set(tickets.map((t) => t.event_id));
 
-    function getTicket(event) {
-        router.post('/tickets', { event_id: event.id });
+    function payTicket(ticket) {
+        router.post(`/tickets/${ticket.id}/pay`);
     }
 
     return (
@@ -113,6 +223,7 @@ export default function Tickets({ events, tickets }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
                 {events.map((event) => {
                     const already = registeredEventIds.has(event.id);
+                    const hasAvailable = (event.ticket_types || []).some((t) => t.quantity === 0 || t.available > 0);
                     return (
                         <div key={event.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200">
                             <div className="h-24 bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center">
@@ -126,16 +237,25 @@ export default function Tickets({ events, tickets }) {
                                 </div>
                                 <div className="font-bold text-gray-900 mb-1">{event.name}</div>
                                 <p className="text-sm text-gray-500 mb-3 line-clamp-2">{event.description}</p>
+                                <div className="flex flex-wrap gap-1 mb-3">
+                                    {(event.ticket_types || []).slice(0, 3).map((t) => (
+                                        <span key={t.id} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-600">
+                                            {Number(t.price) > 0 ? `ETB ${Number(t.price).toLocaleString()}` : 'Free'}
+                                        </span>
+                                    ))}
+                                </div>
                                 <button
-                                    disabled={already}
-                                    onClick={() => getTicket(event)}
+                                    disabled={already || !hasAvailable}
+                                    onClick={() => setBookingEvent(event)}
                                     className={`w-full text-sm rounded-lg py-2.5 font-semibold transition-all duration-200 ${
                                         already
                                             ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                            : 'bg-red-500 text-white hover:bg-red-600 shadow-sm shadow-red-500/25'
+                                            : !hasAvailable
+                                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                : 'bg-red-500 text-white hover:bg-red-600 shadow-sm shadow-red-500/25'
                                     }`}
                                 >
-                                    {already ? 'Ticket Booked' : 'Get Ticket →'}
+                                    {already ? 'Ticket Booked' : !hasAvailable ? 'Sold Out' : 'Get Ticket →'}
                                 </button>
                             </div>
                         </div>
@@ -162,12 +282,13 @@ export default function Tickets({ events, tickets }) {
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {tickets.map((ticket) => (
-                        <TicketCard key={ticket.id} ticket={ticket} onView={setActiveTicket} />
+                        <TicketCard key={ticket.id} ticket={ticket} onView={setActiveTicket} onPay={payTicket} />
                     ))}
                 </div>
             )}
 
             {activeTicket && <QrModal ticket={activeTicket} onClose={() => setActiveTicket(null)} />}
+            {bookingEvent && <TicketTypeModal event={bookingEvent} onClose={() => setBookingEvent(null)} />}
         </UserLayout>
     );
 }
