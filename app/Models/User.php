@@ -54,8 +54,23 @@ class User extends Authenticatable
     return $this->role === 'user';
    }
 
+   public function isOrganizer():bool
+   {
+    return $this->role === 'organizer';
+   }
+
    public function tickets()
    {
     return $this->hasMany(Ticket::class);
+   }
+
+   public function organizerProfile()
+   {
+    return $this->hasOne(OrganizerProfile::class);
+   }
+
+   public function payments()
+   {
+    return $this->hasMany(Payment::class);
    }
 }

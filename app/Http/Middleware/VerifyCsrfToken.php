@@ -12,6 +12,7 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        // Chapa webhook is called server-to-server without a CSRF token.
+        'payment/webhook',
     ];
 }

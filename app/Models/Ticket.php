@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class Ticket extends Model
@@ -13,12 +15,16 @@ class Ticket extends Model
     protected $fillable = [
         'user_id',
         'event_id',
+        'ticket_type_id',
+        'amount_paid',
+        'payment_status',
         'barcode',
         'is_verified',
         'verified_at',
     ];
 
     protected $casts = [
+        'amount_paid' => 'float',
         'is_verified' => 'boolean',
         'verified_at' => 'datetime',
     ];
@@ -36,13 +42,23 @@ class Ticket extends Model
         });
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function event()
+    public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
+    }
+
+    public function ticketType(): BelongsTo
+    {
+        return $this->belongsTo(TicketType::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
     }
 }
