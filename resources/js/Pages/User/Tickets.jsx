@@ -223,7 +223,8 @@ export default function Tickets({ events, tickets }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
                 {events.map((event) => {
                     const already = registeredEventIds.has(event.id);
-                    const hasAvailable = (event.ticket_types || []).some((t) => t.quantity === 0 || t.available > 0);
+                    const hasTypes = (event.ticket_types || []).length > 0;
+                    const hasAvailable = hasTypes && (event.ticket_types || []).some((t) => t.quantity === 0 || t.available > 0);
                     return (
                         <div key={event.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200">
                             <div className="h-24 bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center">
@@ -245,17 +246,17 @@ export default function Tickets({ events, tickets }) {
                                     ))}
                                 </div>
                                 <button
-                                    disabled={already || !hasAvailable}
+                                    disabled={already || !hasTypes || !hasAvailable}
                                     onClick={() => setBookingEvent(event)}
                                     className={`w-full text-sm rounded-lg py-2.5 font-semibold transition-all duration-200 ${
                                         already
                                             ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                            : !hasAvailable
+                                            : !hasTypes || !hasAvailable
                                                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                                                 : 'bg-red-500 text-white hover:bg-red-600 shadow-sm shadow-red-500/25'
                                     }`}
                                 >
-                                    {already ? 'Ticket Booked' : !hasAvailable ? 'Sold Out' : 'Get Ticket →'}
+                                    {already ? 'Ticket Booked' : !hasTypes ? 'No Tickets Yet' : !hasAvailable ? 'Sold Out' : 'Get Ticket →'}
                                 </button>
                             </div>
                         </div>

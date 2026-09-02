@@ -3331,7 +3331,10 @@ function EventFormModal(_ref) {
       name: (_event$name = event === null || event === void 0 ? void 0 : event.name) !== null && _event$name !== void 0 ? _event$name : '',
       description: (_event$description = event === null || event === void 0 ? void 0 : event.description) !== null && _event$description !== void 0 ? _event$description : '',
       event_date: event !== null && event !== void 0 && event.event_date ? event.event_date.slice(0, 16) : '',
-      category_id: (_event$category_id = event === null || event === void 0 ? void 0 : event.category_id) !== null && _event$category_id !== void 0 ? _event$category_id : ''
+      category_id: (_event$category_id = event === null || event === void 0 ? void 0 : event.category_id) !== null && _event$category_id !== void 0 ? _event$category_id : '',
+      ticket_type_name: '',
+      ticket_type_price: '',
+      ticket_type_quantity: ''
     }),
     data = _useForm.data,
     setData = _useForm.setData,
@@ -3436,6 +3439,60 @@ function EventFormModal(_ref) {
       }), errors.event_date && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
         className: "text-red-500 text-xs mb-2",
         children: errors.event_date
+      }), !isEdit && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+        className: "mt-5 p-4 rounded-xl bg-purple-50 border border-purple-100",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+          className: "text-sm font-bold text-gray-900 mb-0.5",
+          children: "First Ticket Type (optional)"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+          className: "text-xs text-gray-500 mb-3",
+          children: "Add a ticket type now so users can buy tickets immediately. You can add more later."
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+          className: "block text-xs font-medium text-gray-700 mb-1",
+          children: "Name"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+          value: data.ticket_type_name,
+          onChange: function onChange(e) {
+            return setData('ticket_type_name', e.target.value);
+          },
+          className: "w-full mb-1 rounded-lg bg-white border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all duration-200",
+          placeholder: "General Admission"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+          className: "grid grid-cols-2 gap-3 mt-2",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+              className: "block text-xs font-medium text-gray-700 mb-1",
+              children: "Price (ETB)"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+              type: "number",
+              step: "0.01",
+              min: "0",
+              value: data.ticket_type_price,
+              onChange: function onChange(e) {
+                return setData('ticket_type_price', e.target.value);
+              },
+              className: "w-full rounded-lg bg-white border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all duration-200",
+              placeholder: "0.00 (free)"
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("label", {
+              className: "block text-xs font-medium text-gray-700 mb-1",
+              children: "Quantity"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+              type: "number",
+              min: "0",
+              value: data.ticket_type_quantity,
+              onChange: function onChange(e) {
+                return setData('ticket_type_quantity', e.target.value);
+              },
+              className: "w-full rounded-lg bg-white border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all duration-200",
+              placeholder: "e.g. 100"
+            })]
+          })]
+        }), errors.ticket_type_name && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
+          className: "text-red-500 text-xs mt-1",
+          children: errors.ticket_type_name
+        })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
         className: "flex justify-end gap-3 mt-6",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("button", {
@@ -5441,7 +5498,8 @@ function Tickets(_ref6) {
       className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10",
       children: [events.map(function (event) {
         var already = registeredEventIds.has(event.id);
-        var hasAvailable = (event.ticket_types || []).some(function (t) {
+        var hasTypes = (event.ticket_types || []).length > 0;
+        var hasAvailable = hasTypes && (event.ticket_types || []).some(function (t) {
           return t.quantity === 0 || t.available > 0;
         });
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
@@ -5476,12 +5534,12 @@ function Tickets(_ref6) {
                 }, t.id);
               })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
-              disabled: already || !hasAvailable,
+              disabled: already || !hasTypes || !hasAvailable,
               onClick: function onClick() {
                 return setBookingEvent(event);
               },
-              className: "w-full text-sm rounded-lg py-2.5 font-semibold transition-all duration-200 ".concat(already ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : !hasAvailable ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-red-500 text-white hover:bg-red-600 shadow-sm shadow-red-500/25'),
-              children: already ? 'Ticket Booked' : !hasAvailable ? 'Sold Out' : 'Get Ticket →'
+              className: "w-full text-sm rounded-lg py-2.5 font-semibold transition-all duration-200 ".concat(already ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : !hasTypes || !hasAvailable ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-red-500 text-white hover:bg-red-600 shadow-sm shadow-red-500/25'),
+              children: already ? 'Ticket Booked' : !hasTypes ? 'No Tickets Yet' : !hasAvailable ? 'Sold Out' : 'Get Ticket →'
             })]
           })]
         }, event.id);

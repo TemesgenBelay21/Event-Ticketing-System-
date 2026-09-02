@@ -9,6 +9,9 @@ function EventFormModal({ event, categories, onClose }) {
         description: event?.description ?? '',
         event_date: event?.event_date ? event.event_date.slice(0, 16) : '',
         category_id: event?.category_id ?? '',
+        ticket_type_name: '',
+        ticket_type_price: '',
+        ticket_type_quantity: '',
     });
 
     function submit(e) {
@@ -73,6 +76,50 @@ function EventFormModal({ event, categories, onClose }) {
                     className="w-full mb-1 rounded-lg bg-gray-50 border border-gray-200 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all duration-200"
                 />
                 {errors.event_date && <p className="text-red-500 text-xs mb-2">{errors.event_date}</p>}
+
+                {!isEdit && (
+                    <div className="mt-5 p-4 rounded-xl bg-purple-50 border border-purple-100">
+                        <div className="text-sm font-bold text-gray-900 mb-0.5">First Ticket Type (optional)</div>
+                        <p className="text-xs text-gray-500 mb-3">
+                            Add a ticket type now so users can buy tickets immediately. You can add more later.
+                        </p>
+
+                        <label className="block text-xs font-medium text-gray-700 mb-1">Name</label>
+                        <input
+                            value={data.ticket_type_name}
+                            onChange={(e) => setData('ticket_type_name', e.target.value)}
+                            className="w-full mb-1 rounded-lg bg-white border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all duration-200"
+                            placeholder="General Admission"
+                        />
+
+                        <div className="grid grid-cols-2 gap-3 mt-2">
+                            <div>
+                                <label className="block text-xs font-medium text-gray-700 mb-1">Price (ETB)</label>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    min="0"
+                                    value={data.ticket_type_price}
+                                    onChange={(e) => setData('ticket_type_price', e.target.value)}
+                                    className="w-full rounded-lg bg-white border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all duration-200"
+                                    placeholder="0.00 (free)"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-gray-700 mb-1">Quantity</label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    value={data.ticket_type_quantity}
+                                    onChange={(e) => setData('ticket_type_quantity', e.target.value)}
+                                    className="w-full rounded-lg bg-white border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all duration-200"
+                                    placeholder="e.g. 100"
+                                />
+                            </div>
+                        </div>
+                        {errors.ticket_type_name && <p className="text-red-500 text-xs mt-1">{errors.ticket_type_name}</p>}
+                    </div>
+                )}
 
                 <div className="flex justify-end gap-3 mt-6">
                     <button type="button" onClick={onClose} className="px-4 py-2.5 text-sm rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium transition-all duration-200">
