@@ -29,9 +29,28 @@ class EventController extends Controller
             'description' => ['required', 'string'],
             'event_date' => ['required', 'date'],
             'category_id' => ['nullable', 'exists:categories,id'],
+            'ticket_type_name' => ['nullable', 'string', 'max:255'],
+            'ticket_type_price' => ['nullable', 'numeric', 'min:0'],
+            'ticket_type_quantity' => ['nullable', 'integer', 'min:0'],
         ]);
 
-        Event::create($validated);
+        $event = Event::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'event_date' => $validated['event_date'],
+            'category_id' => $validated['category_id'] ?? null,
+        ]);
+
+        // Optionally create the first ticket type with the event so it is
+        // immediately available for purchase on the user side.
+        if (!empty($validated['ticket_type_name'])) {
+            $event->ticketTypes()->create([
+                'name' => $validated['ticket_type_name'],
+                'price' => $validated['ticket_type_price'] ?? 0,
+                'quantity' => $validated['ticket_type_quantity'] ?? 0,
+                'description' => 'Ticket type created with event.',
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Event created.');
     }
