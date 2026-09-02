@@ -21,7 +21,11 @@ class TicketController extends Controller
     {
         return Inertia::render('User/Tickets', [
             'events' => Event::where('event_date', '>=', now())
-                ->with(['category:id,name,icon', 'ticketTypes:id,event_id,name,price,quantity'])
+                ->with([
+                    'category:id,name,icon',
+                    'ticketTypes:id,event_id,name,price,quantity',
+                    'ticketTypes.tickets:id,ticket_type_id',
+                ])
                 ->orderBy('event_date')
                 ->get(),
             'tickets' => $request->user()

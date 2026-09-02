@@ -24,6 +24,12 @@ class TicketType extends Model
         'quantity' => 'integer',
     ];
 
+    protected $appends = [
+        'tickets_sold',
+        'available',
+        'is_sold_out',
+    ];
+
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
@@ -36,12 +42,14 @@ class TicketType extends Model
 
     public function getTicketsSoldAttribute(): int
     {
-        return $this->tickets()->count();
+        return $this->relationLoaded('tickets')
+            ? $this->tickets->count()
+            : $this->tickets()->count();
     }
 
     public function getAvailableAttribute(): int
     {
-        return max(0, $this->quantity - $this->tickets()->count());
+        return max(0, $this->quantity - $this->getTicketsSoldAttribute());
     }
 
     public function getIsSoldOutAttribute(): bool
