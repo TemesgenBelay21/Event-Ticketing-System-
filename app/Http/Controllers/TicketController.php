@@ -83,8 +83,7 @@ class TicketController extends Controller
         }
 
         if ($isPaid) {
-            return redirect()->route('payment.initialize', $ticket)
-                ->with('success', 'Ticket reserved! Please complete payment.');
+            return \Inertia\Inertia::location(route('payment.initialize', $ticket));
         }
 
         return redirect()->back()->with('success', 'Ticket booked! Check My Tickets below.');

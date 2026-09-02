@@ -79,7 +79,7 @@ class PaymentController extends Controller
             }
 
             $payment->update(['status' => 'pending']);
-            return redirect()->away($response['data']['checkout_url']);
+            return \Inertia\Inertia::location($response['data']['checkout_url']);
         } catch (\Exception $e) {
             Log::error('Chapa init failed: ' . $e->getMessage());
             $payment->update(['status' => 'failed']);
