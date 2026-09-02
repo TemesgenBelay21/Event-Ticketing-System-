@@ -15,38 +15,33 @@ export default function Register() {
     }
 
     return (
-        <div className="min-h-screen flex bg-gray-50">
+        <div className="min-h-screen flex flex-col bg-gray-50">
             <Head title="Register" />
 
-            {/* Left decorative panel */}
-            <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-red-500 via-red-600 to-red-700 relative overflow-hidden">
+            {/* Full-width header banner */}
+            <header className="bg-gradient-to-br from-red-500 via-red-600 to-red-700 relative overflow-hidden">
                 <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-20 left-20 w-72 h-72 bg-white rounded-full blur-3xl"></div>
-                    <div className="absolute bottom-20 right-20 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+                    <div className="absolute -top-10 -left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+                    <div className="absolute -bottom-20 -right-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
                 </div>
-                <div className="relative z-10 flex flex-col justify-center px-16 text-white">
-                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-2xl font-bold mb-8 shadow-lg">
+                <div className="relative z-10 flex items-center gap-5 px-6 sm:px-10 py-12 text-white">
+                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-2xl font-bold shadow-lg shrink-0">
                         E
                     </div>
-                    <h1 className="text-4xl font-bold leading-tight mb-4">
-                        Join the<br />Event<br />Experience
-                    </h1>
-                    <p className="text-white/80 text-lg max-w-md leading-relaxed">
-                        Create your account and start exploring amazing events near you.
-                    </p>
-                </div>
-            </div>
-
-            {/* Right form panel */}
-            <div className="flex-1 flex items-center justify-center p-8">
-                <div className="w-full max-w-md">
-                    <div className="lg:hidden flex items-center gap-2.5 mb-8">
-                        <div className="w-9 h-9 bg-red-500 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-red-500/30">
-                            E
-                        </div>
-                        <span className="font-bold text-gray-900 text-lg tracking-tight">EventHub</span>
+                    <div>
+                        <h1 className="text-2xl sm:text-3xl font-bold leading-tight mb-2">
+                            Join the<br />Event<br />Experience
+                        </h1>
+                        <p className="text-white/80 text-sm sm:text-base max-w-md leading-relaxed">
+                            Create your account and start exploring amazing events near you.
+                        </p>
                     </div>
+                </div>
+            </header>
 
+            {/* Form centered in remaining space */}
+            <main className="flex-1 flex items-center justify-center p-8">
+                <div className="w-full max-w-md">
                     <form onSubmit={submit} className="bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 p-8">
                         <h1 className="text-2xl font-bold text-gray-900 mb-1">Create an account</h1>
                         <p className="text-sm text-gray-500 mb-7">
@@ -107,7 +102,7 @@ export default function Register() {
                         </Link>
                     </p>
                 </div>
-            </div>
+            </main>
         </div>
     );
 }
