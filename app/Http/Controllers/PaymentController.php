@@ -65,7 +65,7 @@ class PaymentController extends Controller
             'callback_url' => route('payment.callback', $reference),
             'return_url' => route('payment.success'),
             'customization' => [
-                'title' => 'EventHub Ticket Payment',
+                'title' => 'EventHub Payment',
                 'description' => 'Payment for ' . ($ticket->event->name ?? 'event ticket'),
             ],
         ];
