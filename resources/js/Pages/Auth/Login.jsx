@@ -46,7 +46,7 @@ export default function Login() {
                         <span className="font-bold text-gray-900 text-lg tracking-tight">EventHub</span>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 p-8">
+                    <form onSubmit={submit} className="bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 p-8">
                         <h1 className="text-2xl font-bold text-gray-900 mb-1">Welcome back</h1>
                         <p className="text-sm text-gray-500 mb-7">Log in to manage or claim your tickets.</p>
 
@@ -77,7 +77,7 @@ export default function Login() {
                         >
                             Log in
                         </button>
-                    </div>
+                    </form>
 
                     <p className="text-sm text-gray-500 mt-6 text-center">
                         Don&apos;t have an account?{' '}

@@ -47,7 +47,7 @@ export default function Register() {
                         <span className="font-bold text-gray-900 text-lg tracking-tight">EventHub</span>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 p-8">
+                    <form onSubmit={submit} className="bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 p-8">
                         <h1 className="text-2xl font-bold text-gray-900 mb-1">Create an account</h1>
                         <p className="text-sm text-gray-500 mb-7">
                             The very first account created becomes the admin account.
@@ -98,7 +98,7 @@ export default function Register() {
                         >
                             Create account
                         </button>
-                    </div>
+                    </form>
 
                     <p className="text-sm text-gray-500 mt-6 text-center">
                         Already have an account?{' '}
