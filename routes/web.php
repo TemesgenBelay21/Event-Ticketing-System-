@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::get('tickets/{ticket}/pdf', [TicketController::class, 'downloadPdf'])->name('tickets.pdf');
 
     // Payments (Chapa)
-    Route::post('tickets/{ticket}/pay', [PaymentController::class, 'initialize'])->name('payment.initialize');
+    Route::match(['get', 'post'], 'tickets/{ticket}/pay', [PaymentController::class, 'initialize'])->name('payment.initialize');
     Route::get('payment/callback/{reference}', [PaymentController::class, 'callback'])->name('payment.callback');
     Route::get('payment/success', [PaymentController::class, 'success'])->name('payment.success');
 
