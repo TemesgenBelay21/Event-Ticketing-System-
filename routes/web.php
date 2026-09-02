@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::match(['get', 'post'], 'tickets/{ticket}/pay', [PaymentController::class, 'initialize'])->name('payment.initialize');
     Route::get('payment/callback/{reference}', [PaymentController::class, 'callback'])->name('payment.callback');
     Route::get('payment/success', [PaymentController::class, 'success'])->name('payment.success');
+    Route::get('payment/{reference}/status', [PaymentController::class, 'status'])->name('payment.status');
 
     // Discount code validation
     Route::post('discounts/validate', [PaymentController::class, 'validateDiscount'])->name('discounts.validate');

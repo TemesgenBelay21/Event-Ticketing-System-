@@ -143,9 +143,46 @@ class PaymentController extends Controller
      */
     public function success(Request $request)
     {
+        $reference = $request->get('ref');
+
+        $payment = null;
+        if ($reference) {
+            $payment = Payment::with([
+                'ticket.event',
+                'ticket.ticketType',
+                'discountCode',
+            ])->where('tx_ref', $reference)
+                ->where('user_id', $request->user()->id)
+                ->first();
+        }
+
         return Inertia::render('User/Payment/Success', [
-            'reference' => $request->get('ref'),
+            'reference' => $reference,
+            'payment' => $payment,
             'flash' => session()->only(['success', 'error']),
+        ]);
+    }
+
+    /**
+     * Lightweight polling endpoint so the success/receipt page can
+     * reflect the server-side confirmation in place once Chapa's
+     * callback or webhook has marked the payment completed.
+     */
+    public function status(Request $request, string $reference)
+    {
+        $payment = Payment::where('tx_ref', $reference)
+            ->where('user_id', $request->user()->id)
+            ->first();
+
+        if (!$payment) {
+            return response()->json(['error' => 'Payment not found.'], 404);
+        }
+
+        return response()->json([
+            'status' => $payment->status,
+            'chapa_ref' => $payment->chapa_ref,
+            'payment_method' => $payment->payment_method,
+            'paid_at' => $payment->paid_at,
         ]);
     }
 
