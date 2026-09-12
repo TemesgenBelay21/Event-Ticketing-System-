@@ -201,7 +201,7 @@ export default function Success({ reference, payment, flash }) {
                                     View My Tickets
                                 </Link>
                                 <Link
-                                    href="/events"
+                                    href="/tickets"
                                     className="flex-1 text-center px-4 py-3 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium transition-all duration-200"
                                 >
                                     Back to Events

@@ -35,7 +35,7 @@ export default function Dashboard({ events }) {
                         <p className="text-sm text-gray-500 mt-0.5">Registrations and ticket types for your events</p>
                     </div>
                     <Link
-                        href="/events"
+                        href="/tickets"
                         className="text-sm font-medium text-red-600 hover:text-red-700 transition-colors duration-200"
                     >
                         Manage →
