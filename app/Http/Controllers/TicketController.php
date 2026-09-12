@@ -30,7 +30,7 @@ class TicketController extends Controller
                 ->get(),
             'tickets' => $request->user()
                 ->tickets()
-                ->with(['event', 'ticketType'])
+                ->with(['event', 'ticketType', 'payments:id,ticket_id,tx_ref,status'])
                 ->latest()
                 ->get(),
         ]);
@@ -104,5 +104,32 @@ class TicketController extends Controller
         ]);
 
         return $pdf->download($ticket->barcode . '.pdf');
+    }
+
+    /**
+     * Durable view of a ticket's payment receipt. Lets the owner re-open
+     * the confirmation page at any time (no redirect, no time limit)
+     * straight from the My Tickets page.
+     */
+    public function receipt(Request $request, Ticket $ticket)
+    {
+        abort_unless($ticket->user_id === $request->user()->id, 403);
+
+        $payment = $ticket->payments()
+            ->with(['ticket.event', 'ticket.ticketType', 'discountCode'])
+            ->where('status', 'completed')
+            ->latest()
+            ->first();
+
+        if (!$payment) {
+            return redirect()->route('tickets.index')
+                ->with('error', 'No completed payment receipt for this ticket.');
+        }
+
+        return Inertia::render('User/Payment/Success', [
+            'reference' => $payment->tx_ref,
+            'payment' => $payment,
+            'flash' => session()->only(['success', 'error']),
+        ]);
     }
 }

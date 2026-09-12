@@ -63,7 +63,7 @@ class PaymentController extends Controller
             'tx_ref' => $reference,
             'currency' => 'ETB',
             'callback_url' => route('payment.callback', $reference),
-            'return_url' => route('payment.success'),
+            'return_url' => route('payment.success', ['ref' => $reference]),
             'customization' => [
                 'title' => 'EventHub Payment',
                 'description' => 'Payment for ' . ($ticket->event->name ?? 'event ticket'),
@@ -133,7 +133,10 @@ class PaymentController extends Controller
 
         $payment->update(['status' => 'failed']);
 
-        return redirect()->route('tickets.index')->with('error', 'Payment was not successful.');
+        // Keep the user on the receipt page instead of bouncing them back to
+        // My Tickets: Chapa's verification can lag the actual charge, and the
+        // webhook or a later callback will still complete the payment in place.
+        return redirect()->route('payment.success', ['ref' => $payment->tx_ref]);
     }
 
     /**

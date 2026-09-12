@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::get('tickets', [TicketController::class, 'index'])->name('tickets.index');
     Route::post('tickets', [TicketController::class, 'store'])->name('tickets.store');
     Route::get('tickets/{ticket}/pdf', [TicketController::class, 'downloadPdf'])->name('tickets.pdf');
+    Route::get('tickets/{ticket}/receipt', [TicketController::class, 'receipt'])->name('tickets.receipt');
 
     // Payments (Chapa)
     Route::match(['get', 'post'], 'tickets/{ticket}/pay', [PaymentController::class, 'initialize'])->name('payment.initialize');

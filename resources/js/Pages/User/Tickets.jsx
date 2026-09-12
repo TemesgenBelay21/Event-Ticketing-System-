@@ -98,6 +98,14 @@ function TicketCard({ ticket, onView, onPay }) {
                             Pay Now — ETB {Number(ticket.amount_paid).toLocaleString()} 💳
                         </button>
                     )}
+                    {ticket.payment_status === 'paid' && (
+                        <a
+                            href={`/tickets/${ticket.id}/receipt`}
+                            className="flex-1 text-center text-sm bg-gray-800 text-white rounded-lg py-2.5 hover:bg-gray-900 font-medium transition-all duration-200"
+                        >
+                            View Receipt
+                        </a>
+                    )}
                     <a
                         href={`/tickets/${ticket.id}/pdf`}
                         className={showPay ? 'flex-1 text-center text-sm border border-gray-200 text-gray-600 rounded-lg py-2.5 hover:bg-gray-50 font-medium transition-all duration-200' : 'flex-1 text-center text-sm border border-gray-200 text-gray-600 rounded-lg py-2.5 hover:bg-gray-50 font-medium transition-all duration-200'}
