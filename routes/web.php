@@ -62,8 +62,8 @@ Route::middleware('auth')->group(function () {
 Route::post('payment/webhook', [PaymentController::class, 'webhook'])
     ->name('payment.webhook');
 
-// --- Admin/Organizer routes --------------------------------------------------
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+// --- Admin-only routes ----------------------------------------------------
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('events', [EventController::class, 'index'])->name('events.index');
     Route::post('events', [EventController::class, 'store'])->name('events.store');
     Route::put('events/{event}', [EventController::class, 'update'])->name('events.update');
