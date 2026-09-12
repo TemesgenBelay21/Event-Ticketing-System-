@@ -24,18 +24,18 @@ export default function Register() {
                     <div className="absolute -top-10 -left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
                     <div className="absolute -bottom-20 -right-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
                 </div>
-                <div className="relative z-10 flex items-center gap-5 px-6 sm:px-10 py-12 text-white">
-                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-2xl font-bold shadow-lg shrink-0">
-                        E
-                    </div>
-                    <div>
-                        <h1 className="text-2xl sm:text-3xl font-bold leading-tight mb-2">
-                            Join the<br />Event<br />Experience
+                <div className="relative z-10 flex flex-wrap items-center gap-x-5 gap-y-3 justify-between px-6 sm:px-10 py-6 text-white">
+                    <div className="flex items-center gap-5 min-w-0 flex-1">
+                        <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-2xl font-bold shadow-lg shrink-0">
+                            E
+                        </div>
+                        <h1 className="text-xl sm:text-2xl font-bold leading-tight">
+                            Join the Event Experience
                         </h1>
-                        <p className="text-white/80 text-sm sm:text-base max-w-md leading-relaxed">
-                            Create your account and start exploring amazing events near you.
-                        </p>
                     </div>
+                    <p className="text-white/80 text-sm sm:text-base text-right max-w-sm leading-relaxed">
+                        Create your account and start exploring amazing events near you.
+                    </p>
                 </div>
             </header>
 
